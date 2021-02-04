@@ -1,27 +1,44 @@
-import React from "react";
+import React, { useState } from "react";
 import Foot from "./Footer";
 import Header from "./Header";
 import Note from "./Note";
-import noteArray from "../note";
+import CreateArea from "./CreateArea";
 
 // to Display the Notes in the array dynamically.
-function createNote(noteValues){
-  return(
-    <Note 
-      key={noteValues.key}
-      head={noteValues.title}
-      para={noteValues.content}
-    />
-  );
-}
-
 
 function App() {
+
+  const [noteList, setNoteList] = useState([]); 
+  
+  function addNote(note) {
+    setNoteList( prevNote => {
+      return [...prevNote, note];
+    });
+  }
+
+  function deleteNote(id){
+    setNoteList(  prevNote => {
+      return prevNote.filter( (noteItem, index) => {
+        return index !== id;
+      })
+    })
+  }
+  
   return (
     <div>
       <Header />
-      {/* to go through every element in the note Array and print it. */}
-      {noteArray.map(createNote)};
+      <CreateArea 
+        onAdd = {addNote}
+      />
+      {noteList.map( (noteItem, index) => {
+        return <Note 
+          key = {index}
+          id = {index}
+          title = {noteItem.title}
+          content = {noteItem.content}
+          onDelete = {deleteNote}
+        />
+      })}
       <Foot />
     </div>
   );
